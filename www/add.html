@@ -1,0 +1,67 @@
+<ons-page>
+  <ons-toolbar>
+    <div class="left">
+      <ons-back-button>一覧</ons-back-button>
+    </div>
+    <div class="center" id="form-title">タスクの追加</div>
+  </ons-toolbar>
+  <div style="text-align: center; margin-top: 60px;">
+    <p>
+      <ons-input id="title" modifier="underbar" placeholder="タスク名" float></ons-input>
+    </p>
+    <p>
+      <textarea id="body" class="textarea" rows="5" placeholder="詳細を入力してください"></textarea>
+    </p>
+    <p>
+      <ons-input id="date" type="date" modifier="underbar" float></ons-input>
+    </p>
+    <p style="margin-top: 30px;">
+      <ons-button id="addTask">タスクを登録する</ons-button>
+    </p>
+  </div>
+  <script>
+    (() => {
+      ons.getScriptPage().onShow = function() {
+        $('#date').val(dayjs().format('YYYY-MM-DD'));
+      }
+
+      ons.getScriptPage().onInit = function() {
+        $('#addTask').on('click', async e => {
+          // 変数を準備する
+          const title = $('#title').val();
+          const date = $('#date').val();
+          const body = $('#body').val();
+          try {
+            // NCMBにタスクを登録する
+            await addTask(title, date, body);
+            $('#nav')[0].popPage();
+          } catch (e) {
+            ons.notification.alert('タスクの作成に失敗しました');
+          }
+        })
+      }
+
+      // タスクを追加する処理です
+      async function addTask(title, date, body) {
+        // タスクのインスタンスを作成します
+        const task = new(ncmb.DataStore('Task'));
+        // 入力した情報をセットします
+        task
+          .set('title', title)
+          .set('date', new Date(date)) // 日付型にします
+          .set('done', false) // デフォルトは未完了です
+          .set('body', body);
+        // ACLを作成します
+        const user = ncmb.User.getCurrentUser();
+        const acl = new ncmb.Acl();
+        acl
+          .setUserReadAccess(user, true) // ユーザ自身のみ読み込み可
+          .setUserWriteAccess(user, true); // ユーザ自身のみ書き込み可
+        // ACLを設定して保存
+        await task
+          .set('acl', acl)
+          .save();
+      }
+    })();
+  </script>
+</ons-page>

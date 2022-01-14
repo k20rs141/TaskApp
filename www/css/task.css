@@ -1,0 +1,25 @@
+/* This is a CSS file */
+body {
+  text-align: center;
+}
+#form-title {
+  text-align: center;
+}
+#title {
+  margin-top: 50px;
+}
+#body {
+  margin-top: 50px;
+}
+#date {
+  margin-top: 50px;
+}
+button {
+  width: 200px;
+  height: 55px;
+  margin-top: 40px;
+  font-size: 20px;
+  border-radius: 60px;
+  color: white;
+  background-color: #1076FF;
+}
