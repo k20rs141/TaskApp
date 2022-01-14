@@ -1,2 +1,11 @@
 /* This is a CSS file */
-
+body {
+  text-align: center;
+}
+#form-title {
+  /* background-color: black; */
+  /* height: 50px; */
+}
+#add {
+  background-color: black;
+}

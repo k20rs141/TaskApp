@@ -1,33 +1,60 @@
 <!DOCTYPE HTML>
 <ons-page>
-<html>
+  <html>
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta http-equiv="Content-Security-Policy" content="default-src * data: gap: https://ssl.gstatic.com; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
-  <link rel="stylesheet" href="components/loader.css">
-  <link rel="stylesheet" href="css/login.css">
-  <script src="components/loader.js"></script>
-  <script>
-    //
-    // TODO: Write JavaScript code here
-    //
-  </script>
-</head>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src * data: gap: https://ssl.gstatic.com; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+    <link rel="stylesheet" href="components/loader.css">
+    <link rel="stylesheet" href="css/login.css">
+    <script src="components/loader.js"></script>
+    <script>
+      () => {
+        async function signInOrLogin() {
+          const ID = this.querySelector('#ID').value;
+          const password = this.querySelector('#password').value;
+          try {
+            await registerUser(ID, password);
+          } catch (e) {
 
-<body>
-  <div class="topBar" id="form-title">
-    新規登録/ログイン
+          }
+          try {
+            await ncmb.User.login(ID, password);
+            $('#nav')[0].popPage();
+          } catch (e) {
+            ons.notification.alert('ログイン失敗しました。ID、パスワードを確認してください。');
+            return false;
+          }
+        }
+
+        ons.getScriptPage().onInit = function() {
+          this.querySelector('#login').onclick = signInOrLogin.bind(this);
+        }
+
+        async function registerUser(ID, password) { //新規ユーザー登録処理
+          const user = new ncmb.User();
+          user
+            .set('ID', ID);
+          .set('password', password);
+          await user.signUpByAccount();
+        }
+      })();
+    </script>
+  </head>
+
+  <body>
+    <div class="topBar" id="form-title">
+      新規登録/ログイン
+    </div>
+    <div class="">
+      <input id="ID" placeholder="ID">
+    </div>
     <div>
-      <div class="">
-        <input id="ID" placeholder="ID">
-      </div>
-      <div>
-        <input id="password" placeholder="password">
-      </div>
-      <button id="login">新規登録/ログイン</button>
-</body>
+      <input id="password" placeholder="password">
+    </div>
+    <button id="login">新規登録/ログイン</button>
+  </body>
 
-</html>
+  </html>
 </ons-page>
